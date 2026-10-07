@@ -2,6 +2,31 @@ const form = document.querySelector("form");
 const input = document.getElementById("addTask");
 const list = document.getElementById("todo-list");
 
+const todos = [
+  {
+    id: 1,
+    text: "Learn JavaScript",
+    completed: false
+  },
+  {
+    id: 2,
+    text: "Build Todo app",
+    completed: false
+  }
+];
+
+function renderTodos() {
+  list.innerHTML = "";
+
+  todos.forEach(function (todo) {
+    const item = document.createElement("li");
+
+    item.textContent = todo.text;
+
+    list.append(item);
+  });
+}
+
 form.addEventListener("submit", function (event) {
   event.preventDefault();
 
@@ -10,9 +35,19 @@ form.addEventListener("submit", function (event) {
   if (text === "") {
     return;
   }
-    const item = document.createElement("li");
-    item.textContent = text;
-    list.append(item);
-    input.value = "";
-    input.focus();
+
+  const newTodo = {
+    id: Date.now(),
+    text: text,
+    completed: false
+  };
+
+  todos.push(newTodo);
+
+  renderTodos();
+
+  input.value = "";
+  input.focus();
 });
+
+renderTodos();
