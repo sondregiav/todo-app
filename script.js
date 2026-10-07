@@ -21,7 +21,21 @@ function renderTodos() {
   todos.forEach(function (todo) {
     const item = document.createElement("li");
 
-    item.textContent = todo.text;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completed;
+
+    checkbox.addEventListener("change", function () {
+      todo.completed = checkbox.checked;
+      renderTodos();
+    });
+
+    item.append(checkbox);
+    item.append(todo.text);
+
+    if (todo.completed) {
+      item.classList.add("completed");
+    }
 
     list.append(item);
   });
