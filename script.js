@@ -132,6 +132,7 @@ function renderTodos() {
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-button");
 
     deleteButton.addEventListener("click", function () {
       const index = todos.indexOf(todo);
