@@ -151,7 +151,7 @@ form.addEventListener("submit", function (event) {
   if (text === "") return;
 
   const newTodo = {
-    id: Date.now(),
+    id: crypto.randomUUID(),
     text: text,
     completed: false
   };
