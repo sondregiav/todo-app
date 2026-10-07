@@ -17,7 +17,6 @@ A simple todo app built with plain HTML, CSS and vanilla JavaScript. I'm buildin
 - Filter todos (all / active / completed)
 - Accessibility and UX improvements
 
-
 ## How it works
 
 Todos are stored in a `todos` array of objects (`{ id, text, completed }`). Changing the array and then calling `renderTodos()` redraws the list, so the page always reflects the data.
