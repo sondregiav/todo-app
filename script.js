@@ -159,8 +159,16 @@ form.addEventListener("submit", function (event) {
     return;
   }
 
+  let newId = Date.now();
+
+  while (todos.some(function (todo) {
+    return todo.id === newId;
+  })) {
+    newId += 1;
+  }
+
   const newTodo = {
-    id: Date.now(),
+    id: newId,
     text: text,
     completed: false
   };
