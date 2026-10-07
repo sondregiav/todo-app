@@ -44,108 +44,100 @@ function saveTodos() {
   localStorage.setItem("todos", todosJSON);
 }
 
-function renderTodos() {
-  list.innerHTML = "";
+function createTodoItem(todo) {
+  const item = document.createElement("li");
 
-  todos.forEach(function (todo) {
-    const item = document.createElement("li");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = todo.completed;
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.completed;
+  checkbox.addEventListener("change", function () {
+    todo.completed = checkbox.checked;
+    renderTodos();
+  });
 
-    checkbox.addEventListener("change", function () {
-      todo.completed = checkbox.checked;
-      renderTodos();
-    });
+  const isEditing = todo.id === editingId;
 
-    const isEditing = todo.id === editingId;
+  if (isEditing) {
+    const editInput = document.createElement("input");
+    editInput.type = "text";
+    editInput.value = todo.text;
 
-    if (isEditing) {
-      const editInput = document.createElement("input");
-      editInput.type = "text";
-      editInput.value = todo.text;
-
-      editInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          const newText = editInput.value.trim();
-
-          if (newText === "") {
-            return;
-          }
-
-          todo.text = newText;
-          editingId = null;
-          renderTodos();
-        }
-      });
-
-      editInput.focus();
-
-      const saveButton = document.createElement("button");
-      saveButton.textContent = "Save";
-
-      saveButton.addEventListener("click", function () {
+    editInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
         const newText = editInput.value.trim();
 
-        if (newText === "") {
-          return;
-        }
+        if (newText === "") return;
 
         todo.text = newText;
         editingId = null;
         renderTodos();
-      });
+      }
+    });
 
-      const cancelButton = document.createElement("button");
-      cancelButton.textContent = "Cancel";
+    editInput.focus();
 
-      cancelButton.addEventListener("click", function () {
-        editingId = null;
-        renderTodos();
-      });
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save";
 
-      item.append(checkbox);
-      item.append(editInput);
-      item.append(saveButton);
-      item.append(cancelButton);
+    saveButton.addEventListener("click", function () {
+      const newText = editInput.value.trim();
 
-      list.append(item);
+      if (newText === "") return;
 
-      return;
-    }
-
-    const textSpan = document.createElement("span");
-    textSpan.textContent = todo.text;
-
-    if (todo.completed) {
-      textSpan.classList.add("completed");
-    }
-
-    const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
-
-    editButton.addEventListener("click", function () {
-      editingId = todo.id;
+      todo.text = newText;
+      editingId = null;
       renderTodos();
     });
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.classList.add("delete-button");
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
 
-    deleteButton.addEventListener("click", function () {
-      const index = todos.indexOf(todo);
-      todos.splice(index, 1);
+    cancelButton.addEventListener("click", function () {
+      editingId = null;
       renderTodos();
     });
 
-    item.append(checkbox);
-    item.append(textSpan);
-    item.append(editButton);
-    item.append(deleteButton);
+    item.append(checkbox, editInput, saveButton, cancelButton);
 
-    list.append(item);
+    return item;
+  }
+
+  const textSpan = document.createElement("span");
+  textSpan.textContent = todo.text;
+
+  if (todo.completed) {
+    textSpan.classList.add("completed");
+  }
+
+  const editButton = document.createElement("button");
+  editButton.textContent = "Edit";
+
+  editButton.addEventListener("click", function () {
+    editingId = todo.id;
+    renderTodos();
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.classList.add("delete-button");
+
+  deleteButton.addEventListener("click", function () {
+    const index = todos.indexOf(todo);
+    todos.splice(index, 1);
+    renderTodos();
+  });
+
+  item.append(checkbox, textSpan, editButton, deleteButton);
+
+  return item;
+}
+
+function renderTodos() {
+  list.innerHTML = "";
+
+  todos.forEach(function (todo) {
+    list.append(createTodoItem(todo));
   });
 
   saveTodos();
@@ -156,9 +148,7 @@ form.addEventListener("submit", function (event) {
 
   const text = input.value.trim();
 
-  if (text === "") {
-    return;
-  }
+  if (text === "") return;
 
   const newTodo = {
     id: Date.now(),
