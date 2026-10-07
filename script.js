@@ -30,8 +30,18 @@ function renderTodos() {
       renderTodos();
     });
 
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click", function () {
+    const index = todos.indexOf(todo);
+    todos.splice(index, 1);
+    renderTodos();
+    });
+
     item.append(checkbox);
     item.append(todo.text);
+    item.append(deleteButton);
 
     if (todo.completed) {
       item.classList.add("completed");
