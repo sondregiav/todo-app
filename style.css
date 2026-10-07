@@ -42,9 +42,17 @@ padding: 0;
 li {
 padding: 10px 0;
 border-bottom: 1px solid #ddd;
+display: flex;
+align-items: center;
+gap: 10px;
 }
 
 .completed {
   text-decoration: line-through;
   color: #888;
+}
+
+li span {
+  flex: 1;
+  overflow-wrap: anywhere;
 }

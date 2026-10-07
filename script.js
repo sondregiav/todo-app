@@ -40,11 +40,14 @@ function renderTodos() {
     });
 
     item.append(checkbox);
-    item.append(todo.text);
+    const textSpan = document.createElement("span");
+textSpan.textContent = todo.text;
+
+item.append(textSpan);
     item.append(deleteButton);
 
     if (todo.completed) {
-      item.classList.add("completed");
+      textSpan.classList.add("completed");
     }
 
     list.append(item);
