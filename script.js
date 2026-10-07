@@ -2,7 +2,7 @@ const form = document.querySelector("form");
 const input = document.getElementById("addTask");
 const list = document.getElementById("todo-list");
 
-const todos = [
+const starterTodos = [
   {
     id: 1,
     text: "Learn JavaScript",
@@ -14,6 +14,33 @@ const todos = [
     completed: false
   }
 ];
+
+function loadTodos() {
+  const savedTodos = localStorage.getItem("todos");
+
+  if (savedTodos === null) {
+    return starterTodos;
+  }
+
+  try {
+    const parsedTodos = JSON.parse(savedTodos);
+
+    if (Array.isArray(parsedTodos)) {
+      return parsedTodos;
+    }
+
+    return starterTodos;
+  } catch (error) {
+    return starterTodos;
+  }
+}
+
+const todos = loadTodos();
+
+function saveTodos() {
+  const todosJSON = JSON.stringify(todos);
+  localStorage.setItem("todos", todosJSON);
+}
 
 function renderTodos() {
   list.innerHTML = "";
@@ -34,16 +61,16 @@ function renderTodos() {
     deleteButton.textContent = "Delete";
 
     deleteButton.addEventListener("click", function () {
-    const index = todos.indexOf(todo);
-    todos.splice(index, 1);
-    renderTodos();
+      const index = todos.indexOf(todo);
+      todos.splice(index, 1);
+      renderTodos();
     });
 
-    item.append(checkbox);
     const textSpan = document.createElement("span");
-textSpan.textContent = todo.text;
+    textSpan.textContent = todo.text;
 
-item.append(textSpan);
+    item.append(checkbox);
+    item.append(textSpan);
     item.append(deleteButton);
 
     if (todo.completed) {
@@ -52,6 +79,8 @@ item.append(textSpan);
 
     list.append(item);
   });
+
+  saveTodos();
 }
 
 form.addEventListener("submit", function (event) {
