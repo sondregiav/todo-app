@@ -2,6 +2,8 @@ const form = document.querySelector("form");
 const input = document.getElementById("addTask");
 const list = document.getElementById("todo-list");
 
+let editingId = null;
+
 const starterTodos = [
   {
     id: 1,
@@ -57,6 +59,77 @@ function renderTodos() {
       renderTodos();
     });
 
+    const isEditing = todo.id === editingId;
+
+    if (isEditing) {
+      const editInput = document.createElement("input");
+      editInput.type = "text";
+      editInput.value = todo.text;
+
+      editInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          const newText = editInput.value.trim();
+
+          if (newText === "") {
+            return;
+          }
+
+          todo.text = newText;
+          editingId = null;
+          renderTodos();
+        }
+      });
+
+      editInput.focus();
+
+      const saveButton = document.createElement("button");
+      saveButton.textContent = "Save";
+
+      saveButton.addEventListener("click", function () {
+        const newText = editInput.value.trim();
+
+        if (newText === "") {
+          return;
+        }
+
+        todo.text = newText;
+        editingId = null;
+        renderTodos();
+      });
+
+      const cancelButton = document.createElement("button");
+      cancelButton.textContent = "Cancel";
+
+      cancelButton.addEventListener("click", function () {
+        editingId = null;
+        renderTodos();
+      });
+
+      item.append(checkbox);
+      item.append(editInput);
+      item.append(saveButton);
+      item.append(cancelButton);
+
+      list.append(item);
+
+      return;
+    }
+
+    const textSpan = document.createElement("span");
+    textSpan.textContent = todo.text;
+
+    if (todo.completed) {
+      textSpan.classList.add("completed");
+    }
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+
+    editButton.addEventListener("click", function () {
+      editingId = todo.id;
+      renderTodos();
+    });
+
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
 
@@ -66,16 +139,10 @@ function renderTodos() {
       renderTodos();
     });
 
-    const textSpan = document.createElement("span");
-    textSpan.textContent = todo.text;
-
     item.append(checkbox);
     item.append(textSpan);
+    item.append(editButton);
     item.append(deleteButton);
-
-    if (todo.completed) {
-      textSpan.classList.add("completed");
-    }
 
     list.append(item);
   });
