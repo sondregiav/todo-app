@@ -10,6 +10,7 @@ This project is part of my journey learning web development fundamentals. I’m 
 - Edit existing todos
 - Cancel editing
 - Delete todos
+- Filter todos by All / Active / Completed
 - Persist todos using `localStorage`
 - Responsive layout for smaller screens
 - Completed todos are displayed with a strikethrough
@@ -90,11 +91,11 @@ This project is helping me practice:
 - Refactoring code as the project grows
 
 ## Future Improvements
+
 Some things I plan to explore as I continue developing the project:
 
-- Filter todos by **All / Active / Completed**
 - Show the number of remaining todos
-- Improve keyboard accessibility
+- Improve accessible labels and keyboard accessibility
 - Improve the empty-state UI
 - Add a "Clear completed" action
 - Improve the overall UX
