@@ -170,33 +170,32 @@ function renderTodos() {
     return true;
   });
 
+  if (visibleTodos.length === 0) {
+    const emptyMessage = document.createElement("li");
+    emptyMessage.classList.add("empty-state");
+
+    if (currentFilter === "active") {
+      emptyMessage.textContent =
+        "🎉 No active tasks. You're all caught up!";
+    } else if (currentFilter === "completed") {
+      emptyMessage.textContent =
+        "No completed tasks yet. Keep going!";
+    } else {
+      emptyMessage.textContent =
+        "Your todo list is empty. Add a task to get started!";
+    }
+
+    list.append(emptyMessage);
+    saveTodos();
+    return;
+  }
+
   visibleTodos.forEach(function (todo) {
     list.append(createTodoItem(todo));
   });
 
   saveTodos();
 }
-
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const text = input.value.trim();
-
-  if (text === "") return;
-
-  const newTodo = {
-    id: crypto.randomUUID(),
-    text: text,
-    completed: false
-  };
-
-  todos.push(newTodo);
-
-  renderTodos();
-
-  input.value = "";
-  input.focus();
-});
 
 allFilterButton.addEventListener("click", function () {
   currentFilter = "all";
