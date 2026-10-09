@@ -72,6 +72,7 @@ function createTodoItem(todo) {
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.checked = todo.completed;
+  checkbox.setAttribute("aria-label", `Mark "${todo.text}" as completed`);
 
   checkbox.addEventListener("change", function () {
     todo.completed = checkbox.checked;
