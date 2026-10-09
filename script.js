@@ -85,6 +85,7 @@ function createTodoItem(todo) {
     const editInput = document.createElement("input");
     editInput.type = "text";
     editInput.value = todo.text;
+    editInput.setAttribute("aria-label", `Edit text for "${todo.text}"`);
 
     editInput.addEventListener("keydown", function (event) {
       if (event.key === "Enter") {
@@ -104,7 +105,13 @@ function createTodoItem(todo) {
     editInput.focus();
 
     const saveButton = document.createElement("button");
+    saveButton.type = "button";
     saveButton.textContent = "Save";
+
+    saveButton.setAttribute(
+      "aria-label",
+      `Save changes to "${todo.text}"`
+    );
 
     saveButton.addEventListener("click", function () {
       const newText = editInput.value.trim();
@@ -117,7 +124,13 @@ function createTodoItem(todo) {
     });
 
     const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
     cancelButton.textContent = "Cancel";
+
+    cancelButton.setAttribute(
+      "aria-label",
+      `Cancel editing "${todo.text}"`
+    );
 
     cancelButton.addEventListener("click", function () {
       editingId = null;
@@ -139,6 +152,11 @@ function createTodoItem(todo) {
   const editButton = document.createElement("button");
   editButton.textContent = "Edit";
 
+  editButton.setAttribute(
+    "aria-label",
+    `Edit "${todo.text}"`
+  );
+
   editButton.addEventListener("click", function () {
     editingId = todo.id;
     renderTodos();
@@ -147,6 +165,10 @@ function createTodoItem(todo) {
   const deleteButton = document.createElement("button");
   deleteButton.textContent = "Delete";
   deleteButton.classList.add("delete-button");
+  deleteButton.setAttribute(
+    "aria-label",
+    `Delete "${todo.text}"`
+  );
 
   deleteButton.addEventListener("click", function () {
     const index = todos.indexOf(todo);
