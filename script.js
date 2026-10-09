@@ -94,6 +94,9 @@ function createTodoItem(todo) {
         todo.text = newText;
         editingId = null;
         renderTodos();
+      } else if (event.key === "Escape") {
+        editingId = null;
+        renderTodos();
       }
     });
 
@@ -213,6 +216,24 @@ completedFilterButton.addEventListener("click", function () {
   currentFilter = "completed";
   updateFilterButtons();
   renderTodos();
+});
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const text = input.value.trim();
+  if (text === "") return;
+
+  const newTodo = {
+    id: crypto.randomUUID(),
+    text: text,
+    completed: false
+  };
+
+  todos.push(newTodo);
+  renderTodos();
+  input.value = "";
+  input.focus();
 });
 
 updateFilterButtons();
