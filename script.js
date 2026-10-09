@@ -2,7 +2,12 @@ const form = document.querySelector("form");
 const input = document.getElementById("addTask");
 const list = document.getElementById("todo-list");
 
+const allFilterButton = document.getElementById("filter-all");
+const activeFilterButton = document.getElementById("filter-active");
+const completedFilterButton = document.getElementById("filter-completed");
+
 let editingId = null;
+let currentFilter = "all";
 
 const starterTodos = [
   {
@@ -42,6 +47,23 @@ const todos = loadTodos();
 function saveTodos() {
   const todosJSON = JSON.stringify(todos);
   localStorage.setItem("todos", todosJSON);
+}
+
+function updateFilterButtons() {
+  allFilterButton.setAttribute(
+    "aria-pressed",
+    currentFilter === "all"
+  );
+
+  activeFilterButton.setAttribute(
+    "aria-pressed",
+    currentFilter === "active"
+  );
+
+  completedFilterButton.setAttribute(
+    "aria-pressed",
+    currentFilter === "completed"
+  );
 }
 
 function createTodoItem(todo) {
@@ -136,7 +158,19 @@ function createTodoItem(todo) {
 function renderTodos() {
   list.innerHTML = "";
 
-  todos.forEach(function (todo) {
+  const visibleTodos = todos.filter(function (todo) {
+    if (currentFilter === "active") {
+      return todo.completed === false;
+    }
+
+    if (currentFilter === "completed") {
+      return todo.completed === true;
+    }
+
+    return true;
+  });
+
+  visibleTodos.forEach(function (todo) {
     list.append(createTodoItem(todo));
   });
 
@@ -164,4 +198,23 @@ form.addEventListener("submit", function (event) {
   input.focus();
 });
 
+allFilterButton.addEventListener("click", function () {
+  currentFilter = "all";
+  updateFilterButtons();
+  renderTodos();
+});
+
+activeFilterButton.addEventListener("click", function () {
+  currentFilter = "active";
+  updateFilterButtons();
+  renderTodos();
+});
+
+completedFilterButton.addEventListener("click", function () {
+  currentFilter = "completed";
+  updateFilterButtons();
+  renderTodos();
+});
+
+updateFilterButtons();
 renderTodos();

@@ -12,9 +12,16 @@
       <h1>My todos</h1>
 
       <form>
-      <label for="addTask">New Todo:</label>
-      <input type="text" id="addTask" name="todo" placeholder="Enter a new todo" required>
-      <button type="submit">Add Todo</button></form>
+        <label for="addTask">New Todo:</label>
+        <input type="text" id="addTask" name="todo" placeholder="Enter a new todo" required>
+        <button type="submit">Add Todo</button>
+      </form>
+
+      <div id="filters" role="group" aria-label="Filter todos">
+        <button type="button" id="filter-all" aria-pressed="true">All</button>
+        <button type="button" id="filter-active" aria-pressed="false">Active</button>
+        <button type="button" id="filter-completed" aria-pressed="false">Completed</button>
+      </div>
 
       <ul id="todo-list">
       </ul>

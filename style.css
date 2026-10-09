@@ -198,3 +198,39 @@ li input[type="text"]:focus {
     padding: 7px 10px;
   }
 }
+
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+
+#filters button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+#filters button:hover {
+  background-color: #f0f0f0;
+}
+
+#filters button[aria-pressed="true"] {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+#filters button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
