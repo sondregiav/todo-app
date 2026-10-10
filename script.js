@@ -5,6 +5,7 @@ const list = document.getElementById("todo-list");
 const allFilterButton = document.getElementById("filter-all");
 const activeFilterButton = document.getElementById("filter-active");
 const completedFilterButton = document.getElementById("filter-completed");
+const activeCount = document.getElementById("active-count");
 
 let editingId = null;
 let currentFilter = "all";
@@ -49,20 +50,29 @@ function saveTodos() {
   localStorage.setItem("todos", todosJSON);
 }
 
+function updateActiveCount() {
+  const count = todos.filter(function (todo) {
+    return !todo.completed;
+  }).length;
+
+  activeCount.textContent =
+    `${count} ${count === 1 ? "task" : "tasks"} remaining`;
+}
+
 function updateFilterButtons() {
   allFilterButton.setAttribute(
     "aria-pressed",
-    currentFilter === "all"
+    String(currentFilter === "all")
   );
 
   activeFilterButton.setAttribute(
     "aria-pressed",
-    currentFilter === "active"
+    String(currentFilter === "active")
   );
 
   completedFilterButton.setAttribute(
     "aria-pressed",
-    currentFilter === "completed"
+    String(currentFilter === "completed")
   );
 }
 
@@ -72,10 +82,16 @@ function createTodoItem(todo) {
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.checked = todo.completed;
-  checkbox.setAttribute("aria-label", `Mark "${todo.text}" as completed`);
+
+  checkbox.setAttribute(
+    "aria-label",
+    `Mark "${todo.text}" as completed`
+  );
 
   checkbox.addEventListener("change", function () {
     todo.completed = checkbox.checked;
+
+    saveTodos();
     renderTodos();
   });
 
@@ -85,24 +101,31 @@ function createTodoItem(todo) {
     const editInput = document.createElement("input");
     editInput.type = "text";
     editInput.value = todo.text;
-    editInput.setAttribute("aria-label", `Edit text for "${todo.text}"`);
+    editInput.classList.add("edit-input");
+
+    editInput.setAttribute(
+      "aria-label",
+      `Edit text for "${todo.text}"`
+    );
 
     editInput.addEventListener("keydown", function (event) {
       if (event.key === "Enter") {
+        event.preventDefault();
+
         const newText = editInput.value.trim();
 
         if (newText === "") return;
 
         todo.text = newText;
         editingId = null;
+
+        saveTodos();
         renderTodos();
       } else if (event.key === "Escape") {
         editingId = null;
         renderTodos();
       }
     });
-
-    editInput.focus();
 
     const saveButton = document.createElement("button");
     saveButton.type = "button";
@@ -116,10 +139,15 @@ function createTodoItem(todo) {
     saveButton.addEventListener("click", function () {
       const newText = editInput.value.trim();
 
-      if (newText === "") return;
+      if (newText === "") {
+        editInput.focus();
+        return;
+      }
 
       todo.text = newText;
       editingId = null;
+
+      saveTodos();
       renderTodos();
     });
 
@@ -137,7 +165,12 @@ function createTodoItem(todo) {
       renderTodos();
     });
 
-    item.append(checkbox, editInput, saveButton, cancelButton);
+    item.append(
+      checkbox,
+      editInput,
+      saveButton,
+      cancelButton
+    );
 
     return item;
   }
@@ -150,6 +183,7 @@ function createTodoItem(todo) {
   }
 
   const editButton = document.createElement("button");
+  editButton.type = "button";
   editButton.textContent = "Edit";
 
   editButton.setAttribute(
@@ -163,8 +197,10 @@ function createTodoItem(todo) {
   });
 
   const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
   deleteButton.textContent = "Delete";
   deleteButton.classList.add("delete-button");
+
   deleteButton.setAttribute(
     "aria-label",
     `Delete "${todo.text}"`
@@ -172,11 +208,25 @@ function createTodoItem(todo) {
 
   deleteButton.addEventListener("click", function () {
     const index = todos.indexOf(todo);
+
+    if (index === -1) return;
+
     todos.splice(index, 1);
+
+    if (editingId === todo.id) {
+      editingId = null;
+    }
+
+    saveTodos();
     renderTodos();
   });
 
-  item.append(checkbox, textSpan, editButton, deleteButton);
+  item.append(
+    checkbox,
+    textSpan,
+    editButton,
+    deleteButton
+  );
 
   return item;
 }
@@ -184,13 +234,16 @@ function createTodoItem(todo) {
 function renderTodos() {
   list.innerHTML = "";
 
+  // Count all incomplete todos, regardless of the current filter.
+  updateActiveCount();
+
   const visibleTodos = todos.filter(function (todo) {
     if (currentFilter === "active") {
-      return todo.completed === false;
+      return !todo.completed;
     }
 
     if (currentFilter === "completed") {
-      return todo.completed === true;
+      return todo.completed;
     }
 
     return true;
@@ -220,32 +273,48 @@ function renderTodos() {
     list.append(createTodoItem(todo));
   });
 
+  // Restore focus to the editing input after rendering.
+  if (editingId !== null) {
+    const editInput = list.querySelector(".edit-input");
+
+    if (editInput) {
+      editInput.focus();
+      editInput.select();
+    }
+  }
+
   saveTodos();
 }
 
-allFilterButton.addEventListener("click", function () {
-  currentFilter = "all";
+function setFilter(filter) {
+  currentFilter = filter;
+  editingId = null;
+
   updateFilterButtons();
   renderTodos();
+}
+
+allFilterButton.addEventListener("click", function () {
+  setFilter("all");
 });
 
 activeFilterButton.addEventListener("click", function () {
-  currentFilter = "active";
-  updateFilterButtons();
-  renderTodos();
+  setFilter("active");
 });
 
 completedFilterButton.addEventListener("click", function () {
-  currentFilter = "completed";
-  updateFilterButtons();
-  renderTodos();
+  setFilter("completed");
 });
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
 
   const text = input.value.trim();
-  if (text === "") return;
+
+  if (text === "") {
+    input.focus();
+    return;
+  }
 
   const newTodo = {
     id: crypto.randomUUID(),
@@ -254,7 +323,15 @@ form.addEventListener("submit", function (event) {
   };
 
   todos.push(newTodo);
+
+  // Show the newly added task immediately.
+  currentFilter = "all";
+  editingId = null;
+
+  updateFilterButtons();
+  saveTodos();
   renderTodos();
+
   input.value = "";
   input.focus();
 });

@@ -186,29 +186,42 @@ li input[type="text"]:focus {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 0.375rem;
-  background-color: #fff;
+  background: #fff;
   color: #333;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-#filters button:hover {
-  background-color: #f0f0f0;
 }
 
 #filters button[aria-pressed="true"] {
-  background-color: #2563eb;
+  background: #2563eb;
   border-color: #2563eb;
   color: #fff;
-  font-weight: 600;
 }
 
 #filters button:focus-visible {
   outline: 3px solid #2563eb;
   outline-offset: 3px;
+}
+
+.empty-state {
+  list-style: none;
+  padding: 24px 16px;
+  margin: 16px 0;
+  text-align: center;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.active-count {
+  margin: 8px 0 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.active-count strong {
+  font-weight: 700;
 }
 
 /* Mobile */
